@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - AI Mental Health Monitoring</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.login-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-container h1 {
+    font-size: 2.2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+}
+
+.login-container p {
+    color: #718096;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.input-field {
+    width: 100%;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 50px;
+    border: 2px solid #e2e8f0;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.input-field:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.forgot-password {
+    color: #667eea;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .login-container {
+        padding: 30px 25px;
+    }
+
+    .login-container h1 {
+        font-size: 1.8rem;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="login-container">
+    <h1>🧠 AI Mental Health</h1>
+    <p>Login to access your mental health dashboard</p>
+    
+    <input type="text" class="input-field" placeholder="Username" id="username">
+    <input type="password" class="input-field" placeholder="Password" id="password">
+    
+    <button class="btn btn-primary" id="loginBtn">Login</button>
+    <button class="btn btn-secondary" id="registerBtn">Register</button>
+    
+    <a href="#" class="forgot-password">Forgot Password?</a>
+</div>
+
+<script>
+// Simple login simulation
+const loginBtn = document.getElementById('loginBtn');
+
+loginBtn.addEventListener('click', () => {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    if(username && password) {
+        alert('Login successful! Redirecting...');
+        // Redirect to smera page
+        window.location.href = "smera.html";
+    } else {
+        alert('Please enter both username and password.');
+    }
+});
+</script>
+
+</body>
+</html>
