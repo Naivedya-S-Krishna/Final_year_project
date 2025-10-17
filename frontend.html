@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindWell - AI Stress Detection Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-buttons button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-buttons button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        /* Pages */
+        .page {
+            display: none;
+            margin-top: 80px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Auth Pages */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-card h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .auth-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #667eea;
+            cursor: pointer;
+        }
+
+        /* Home Page */
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .feature-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .feature-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .feature-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .feature-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Analysis Container */
+        .analysis-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            margin: 30px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 20px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .analyze-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Results Display */
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .stress-meter {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .meter-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            position: relative;
+            background: conic-gradient(from 0deg, #28a745 0deg, #ffc107 120deg, #dc3545 240deg, #28a745 360deg);
+        }
+
+        .meter-inner {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .stress-percentage {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stress-label {
+            font-size: 1.1rem;
+            color: #666;
+        }
+
+        .confidence-section {
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+
+        .suggestions {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .suggestions h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .suggestion-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .suggestion-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .navbar {
+                position: relative;
+            }
+
+            .page {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">MindWell</div>
+            <div class="nav-buttons">
+                <button id="homeBtn" style="display: none;">Home</button>
+                <button id="logoutBtn" style="display: none;">Logout</button>
+                <button id="loginNavBtn">Login</button>
+                <button id="signupNavBtn">Sign Up</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Login Page -->
+        <div id="loginPage" class="page active">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Welcome Back</h2>
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="auth-btn">Sign In</button>
+                        <div class="auth-link" onclick="showSignup()">Don't have an account? Sign up</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signup Page -->
+        <div id="signupPage" class="page">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h2>Join MindWell</h2>
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" required>
+                        </div>
+                        <button type="submit" class="auth-btn">Create Account</button>
+                        <div class="auth-link" onclick="showLogin()">Already have an account? Sign in</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Page -->
+        <div id="homePage" class="page">
+            <div class="hero">
+                <h1>AI-Powered Mental Wellness</h1>
+                <p>Advanced stress detection through voice, video, and conversation analysis</p>
+            </div>
+
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">🎤</div>
+                    <h3>Voice Stress Analysis</h3>
+                    <p>Upload audio recordings to analyze stress levels through advanced voice pattern recognition using deep learning neural networks.</p>
+                    <button class="feature-btn" onclick="showAudioAnalysis()">Analyze Voice</button>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📹</div>
+                    <h3>Video Analysis</h3>
+                    <p>Detect stress through facial expressions and body language analysis using computer vision technology.</p>
+                    <button class="feature-btn" disabled>Coming Soon</button>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">💬</div>
+                    <h3>Chat Analysis</h3>
+                    <p>Analyze conversation patterns and text sentiment to identify stress indicators and emotional states.</p>
+                    <button class="feature-btn" disabled>Coming Soon</button>
+                </div>
+            </div>
+
+            <div class="analysis-container">
+                <h2>About Mental Wellness</h2>
+                <p style="margin-bottom: 20px;">Mental wellness is a crucial aspect of overall health that affects how we think, feel, and act. Our AI-powered platform helps you:</p>
+                <ul style="margin: 20px 0; padding-left: 30px;">
+                    <li>Monitor stress levels objectively through voice analysis</li>
+                    <li>Receive personalized recommendations for stress management</li>
+                    <li>Track wellness patterns over time</li>
+                    <li>Access evidence-based coping strategies</li>
+                </ul>
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 10px; padding: 20px; margin-top: 20px;">
+                    <strong>Important:</strong> This tool is designed to complement, not replace, professional mental health services. If you're experiencing persistent stress or mental health concerns, please consult with a qualified healthcare provider.
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Analysis Page -->
+        <div id="audioPage" class="page">
+            <div class="analysis-container">
+                <h2>Voice Stress Analysis</h2>
+                <p>Upload an audio file to analyze stress levels using our deep learning neural network trained on emotional speech patterns.</p>
+
+                <div class="upload-area" onclick="document.getElementById('audioFile').click()">
+                    <div class="upload-icon">🎵</div>
+                    <h3>Drop audio file here or click to browse</h3>
+                    <p>Supported formats: WAV, MP3, FLAC, M4A</p>
+                    <input type="file" id="audioFile" class="file-input" accept="audio/*">
+                </div>
+
+                <div style="text-align: center;">
+                    <button id="analyzeBtn" class="analyze-btn" disabled onclick="analyzeAudio()">Analyze Audio</button>
+                </div>
+
+                <div id="errorMessage" class="error" style="display: none;"></div>
+                <div id="successMessage" class="success" style="display: none;"></div>
+
+                <div class="results" id="results">
+                    <div class="stress-meter">
+                        <div class="meter-circle">
+                            <div class="meter-inner">
+                                <div class="stress-percentage" id="stressPercentage">--</div>
+                                <div class="stress-label" id="stressLabel">Stress Level</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="confidence-section">
+                        <h4>Neural Network Confidence</h4>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill"></div>
+                        </div>
+                        <p>Confidence: <span id="confidenceText">--</span></p>
+                    </div>
+
+                    <div class="suggestions" id="suggestions">
+                        <h3>Personalized Recommendations</h3>
+                        <div id="suggestionsList"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = window.location.origin;
+        
+        // User Management
+        let currentUser = null;
+
+        // Utility Functions
+        function showMessage(message, type = 'success') {
+            const successEl = document.getElementById('successMessage');
+            const errorEl = document.getElementById('errorMessage');
+            
+            if (type === 'success') {
+                successEl.textContent = message;
+                successEl.style.display = 'block';
+                errorEl.style.display = 'none';
+            } else {
+                errorEl.textContent = message;
+                errorEl.style.display = 'block';
+                successEl.style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                successEl.style.display = 'none';
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        function showLogin() {
+            showPage('loginPage');
+            updateNavButtons(false);
+        }
+
+        function showSignup() {
+            showPage('signupPage');
+            updateNavButtons(false);
+        }
+
+        function showHome() {
+            showPage('homePage');
+            updateNavButtons(true);
+        }
+
+        function showAudioAnalysis() {
+            showPage('audioPage');
+            updateNavButtons(true);
+        }
+
+        function updateNavButtons(loggedIn) {
+            document.getElementById('loginNavBtn').style.display = loggedIn ? 'none' : 'inline-block';
+            document.getElementById('signupNavBtn').style.display = loggedIn ? 'none' : 'inline-block';
+            document.getElementById('logoutBtn').style.display = loggedIn ? 'inline-block' : 'none';
+            document.getElementById('homeBtn').style.display = loggedIn ? 'inline-block' : 'none';
+        }
+
+        // Event Listeners
+        document.getElementById('loginNavBtn').onclick = showLogin;
+        document.getElementById('signupNavBtn').onclick = showSignup;
+        document.getElementById('homeBtn').onclick = showHome;
+        document.getElementById('logoutBtn').onclick = function() {
+            currentUser = null;
+            showLogin();
+            showMessage('Logged out successfully');
+        };
+
+        // Form Handling
+        document.getElementById('loginForm').onsubmit = function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (email && password) {
+                currentUser = { email, name: email.split('@')[0] };
+                showHome();
+                showMessage('Welcome back, ' + currentUser.name + '!');
+            }
+        };
+
+        document.getElementById('signupForm').onsubmit = function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            
+            if (name && email && password) {
+                currentUser = { email, name };
+                showHome();
+                showMessage('Welcome to MindWell, ' + name + '!');
+            }
+        };
+
+        // File Upload Handling
+        const audioFileInput = document.getElementById('audioFile');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const uploadArea = document.querySelector('.upload-area');
+
+        // Replace the existing audioFileInput.onchange function with this:
+audioFileInput.onchange = function(e) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+        const file = files[0];
+        const fileName = file.name;
+        const fileSize = (file.size / 1024 / 1024).toFixed(2);
+        
+        uploadArea.innerHTML = `
+            <div class="upload-icon">✅</div>
+            <h3>${fileName}</h3>
+            <p>File size: ${fileSize} MB - Ready for analysis</p>
+        `;
+        analyzeBtn.disabled = false;
+    }
+};
+        // Drag and Drop
+        uploadArea.ondragover = function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        };
+
+        uploadArea.ondragleave = function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        };
+
+        uploadArea.ondrop = function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            
+            const files = e.dataTransfer.files;
+            if (files && files[0] && files[0].type.startsWith('audio/')) {
+                audioFileInput.files = files;
+                audioFileInput.onchange();
+            } else {
+                showMessage('Please drop a valid audio file', 'error');
+            }
+        };
+        async function analyzeAudio() {
+    const fileInput = document.getElementById('audioFile');
+    const files = fileInput.files;
+    
+    if (!files || files.length === 0) {
+        showMessage('Please select an audio file first', 'error');
+        return;
+    }
+    
+    const file = files[0];
+    
+    // Check file size (16MB limit)
+    if (file.size > 16 * 1024 * 1024) {
+        showMessage('File too large. Please upload a file smaller than 16MB', 'error');
+        return;
+    }
+
+    console.log('Starting analysis for file:', file.name);
+
+    // Show loading
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('errorMessage').style.display = 'none';
+    document.getElementById('successMessage').style.display = 'none';
+    analyzeBtn.disabled = true;
+
+    try {
+        // Create FormData for file upload
+        const formData = new FormData();
+        formData.append('audio_file', file);
+
+        console.log('Sending request to backend...');
+
+        // Make API call to backend
+        const response = await fetch('/api/analyze-audio', {
+            method: 'POST',
+            body: formData
+        });
+
+        console.log('Response received:', response.status);
+
+        const data = await response.json();
+        console.log('Response data:', data);
+
+        if (response.ok && data.success) {
+            // Display successful results
+            displayResults(
+                data.stress_percentage,
+                data.stress_label,
+                data.confidence,
+                data.probabilities
+            );
+            
+            let message = 'Analysis completed successfully!';
+            if (data.demo_mode) {
+                message += ' (Demo mode - train a model for real predictions)';
+            }
+            showMessage(message);
+        } else {
+            // Handle errors
+            const errorMsg = data.message || data.error || 'Analysis failed';
+            showMessage(errorMsg, 'error');
+            console.error('Analysis error:', data);
+        }
+
+    } catch (error) {
+        console.error('Network/Request error:', error);
+        showMessage('Connection error. Please check if the backend server is running on port 8080.', 'error');
+    } finally {
+        document.getElementById('loading').classList.remove('show');
+        analyzeBtn.disabled = false;
+    }
+}
+
+        function displayResults(stressPercentage, stressLabel, confidence, probabilities) {
+            // Update stress meter
+            document.getElementById('stressPercentage').textContent = stressPercentage + '%';
+            document.getElementById('stressLabel').textContent = stressLabel;
+
+            // Update confidence
+            document.getElementById('confidenceFill').style.width = (confidence * 100) + '%';
+            document.getElementById('confidenceText').textContent = Math.round(confidence * 100) + '%';
+
+            // Generate suggestions based on stress level
+            const suggestions = generateSuggestions(stressPercentage);
+            document.getElementById('suggestionsList').innerHTML = suggestions;
+
+            // Show results
+            document.getElementById('results').classList.add('show');
+        }
+
+        function generateSuggestions(stressLevel) {
+            let suggestions = '';
+
+            if (stressLevel < 40) {
+                suggestions = `
+                    <div class="suggestion-item">
+                        <h4>🌱 Maintain Your Balance</h4>
+                        <p>Your stress levels appear to be in a healthy range. Continue with your current wellness practices:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Regular physical exercise (30 minutes daily)</li>
+                            <li>Consistent sleep schedule (7-9 hours nightly)</li>
+                            <li>Mindfulness or meditation practice</li>
+                            <li>Social connections and support systems</li>
+                        </ul>
+                    </div>
+                    <div class="suggestion-item">
+                        <h4>🎯 Preventive Measures</h4>
+                        <p>Build resilience with these evidence-based practices:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Deep breathing exercises during transitions</li>
+                            <li>Time in nature or outdoors</li>
+                            <li>Hobbies and creative activities</li>
+                        </ul>
+                    </div>
+                `;
+            } else if (stressLevel < 70) {
+                suggestions = `
+                    <div class="suggestion-item">
+                        <h4>⚖️ Moderate Stress Management</h4>
+                        <p>Your voice indicates moderate stress levels. Consider implementing these strategies:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Practice progressive muscle relaxation</li>
+                            <li>Try the 4-7-8 breathing technique</li>
+                            <li>Take regular breaks during demanding tasks</li>
+                            <li>Consider talking to a trusted friend or counselor</li>
+                        </ul>
+                    </div>
+                    <div class="suggestion-item">
+                        <h4>🧘 Immediate Relief Techniques</h4>
+                        <p>For quick stress relief, try:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>5-minute guided meditation</li>
+                            <li>Listen to calming music</li>
+                            <li>Take a brief walk outdoors</li>
+                            <li>Practice gratitude journaling</li>
+                        </ul>
+                    </div>
+                `;
+            } else {
+                suggestions = `
+                    <div class="suggestion-item">
+                        <h4>🚨 High Stress - Immediate Action Recommended</h4>
+                        <p>Your voice patterns suggest elevated stress levels. Please consider these steps:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li><strong>Immediate:</strong> Practice box breathing (4-4-4-4 pattern)</li>
+                            <li><strong>Today:</strong> Reach out to a trusted friend or family member</li>
+                            <li><strong>This week:</strong> Consider scheduling time with a mental health professional</li>
+                        </ul>
+                    </div>
+                    <div class="suggestion-item">
+                        <h4>🏥 Professional Support</h4>
+                        <p>High stress levels may benefit from professional guidance:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li>Consider counseling or therapy</li>
+                            <li>Speak with your healthcare provider</li>
+                            <li>Explore stress management programs</li>
+                        </ul>
+                    </div>
+                    <div class="suggestion-item">
+                        <h4>📞 Crisis Resources</h4>
+                        <p>If you're in crisis or having thoughts of self-harm:</p>
+                        <ul style="margin: 10px 0; padding-left: 20px;">
+                            <li><strong>US:</strong> National Suicide Prevention Lifeline: 988</li>
+                            <li><strong>Crisis Text Line:</strong> Text HOME to 741741</li>
+                            <li>Contact your local emergency services: 911</li>
+                        </ul>
+                    </div>
+                `;
+            }
+
+            return suggestions;
+        }
+
+        // Check backend health on page load
+        async function checkBackendHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/health`);
+                const data = await response.json();
+                
+                if (!data.model_loaded) {
+                    console.warn('Backend model not loaded properly');
+                }
+            } catch (error) {
+                console.warn('Backend health check failed:', error);
+            }
+        }
+        // Add this function to test backend connection
+async function testBackend() {
+    try {
+        const response = await fetch('/api/health');
+        const data = await response.json();
+        console.log('Backend test:', data);
+        showMessage(`Backend is ${data.status}. Model: ${data.model_type}`, 'success');
+    } catch (error) {
+        console.error('Backend test failed:', error);
+        showMessage('Cannot connect to backend server', 'error');
+    }
+}
+
+// Call this when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    showLogin();
+    testBackend(); // Add this line
+});
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            showLogin();
+            checkBackendHealth();
+        });
+    </script>
+</body>
+</html>
